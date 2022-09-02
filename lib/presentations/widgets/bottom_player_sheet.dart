@@ -4,11 +4,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:music_app_challenge/constants/colors.dart';
+import 'package:music_app_challenge/repository/model/music_data_response_model.dart';
 
 class BottomPlayerSheet extends StatelessWidget {
-  const BottomPlayerSheet({
+  final Duration position;
+  final Duration musicLength;
+  final Function onSeekMusic;
+  final MusicDataModel musicData;
+
+  BottomPlayerSheet({
     Key? key,
     required this.size,
+    required this.position,
+    required this.musicLength,
+    required this.onSeekMusic,
+    required this.musicData,
   }) : super(key: key);
 
   final Size size;
@@ -32,12 +42,13 @@ class BottomPlayerSheet extends StatelessWidget {
           child: Column(
             children: <Widget>[
               Slider.adaptive(
-                value: 8.0,
-                onChanged: null,
-                max: 10.0,
-                activeColor: colorWhite,
-                inactiveColor: colorBlack,
-              ),
+                  max: musicLength.inSeconds.toDouble(),
+                  value: position.inSeconds.toDouble(),
+                  activeColor: colorWhite,
+                  inactiveColor: colorBlack,
+                  onChanged: (value) {
+                    onSeekMusic(value);
+                  }),
               Padding(
                 padding: EdgeInsets.symmetric(
                   vertical: 10.h,
@@ -57,8 +68,7 @@ class BottomPlayerSheet extends StatelessWidget {
                             topRight: Radius.circular(10)),
                         image: DecorationImage(
                             // image: AssetImage(imgPath),
-                            image: NetworkImage(
-                                "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/44/06/fd/4406fdc0-aab5-e300-82ba-3e5fe81a68a7/00602537868858.rgb.jpg/100x100bb.jpg"),
+                            image: NetworkImage(musicData.albumImage),
                             fit: BoxFit.cover),
                       ),
                     ),
@@ -69,15 +79,15 @@ class BottomPlayerSheet extends StatelessWidget {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              "So far Away Men",
-                              maxLines: 2,
+                              musicData.trackTitle,
+                              maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               textAlign: TextAlign.start,
                               style: GoogleFonts.poppins(
                                 textStyle: TextStyle(
                                   fontWeight: FontWeight.w600,
                                   color: colorWhite,
-                                  fontSize: 16.sp,
+                                  fontSize: 14.sp,
                                 ),
                               ),
                             ),
@@ -85,7 +95,7 @@ class BottomPlayerSheet extends StatelessWidget {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              "Avenged Sevenfold",
+                              musicData.artistName,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               textAlign: TextAlign.start,

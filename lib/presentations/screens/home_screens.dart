@@ -1,10 +1,18 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, must_be_immutable
 
+import 'dart:async';
+
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:music_app_challenge/constants/api_response.dart';
 import 'package:music_app_challenge/constants/colors.dart';
+import 'package:music_app_challenge/logic/cubit/music_data_cubit.dart';
+import 'package:music_app_challenge/logic/cubit/music_player_cubit.dart';
 import 'package:music_app_challenge/presentations/widgets/appbar_search.dart';
 import 'package:music_app_challenge/presentations/widgets/bottom_player_sheet.dart';
 import 'package:music_app_challenge/presentations/widgets/list_music_data.dart';
+import 'package:music_app_challenge/presentations/widgets/widget_state_handling.dart';
 
 class HomeScreen extends StatefulWidget {
   String descriptionPage;
@@ -16,6 +24,33 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final ScrollController _scrollController = ScrollController();
+  final TextEditingController searchController = TextEditingController();
+  final blocMusicData = MusicDataCubit();
+  final blocMusicPlayer = MusicPlayerCubit();
+
+  String oldValue = '';
+  Timer? timer;
+  AudioPlayer _player = AudioPlayer();
+  Duration _position = new Duration();
+  Duration _musicLength = new Duration();
+
+  void _onSearchChanged() {
+    if (searchController.text != '' && oldValue != searchController.text) {
+      timer = Timer(const Duration(milliseconds: 2000), () async {
+        timer?.cancel();
+        await blocMusicData.getMusicDataByQuery(searchController.text);
+        oldValue = searchController.text;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    searchController.addListener(() {
+      _onSearchChanged();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,22 +63,117 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Expanded(
               flex: 2,
-              child: AppbarSearch(size: size),
+              child: AppbarSearch(
+                size: size,
+                searchTextController: searchController,
+                onChanged: (value) {},
+                onSubmitted: (value) async {
+                  await blocMusicData.getMusicDataByQuery(value);
+                },
+                onPressSearch: () async {
+                  await blocMusicData
+                      .getMusicDataByQuery(searchController.text);
+                },
+              ),
             ),
             Expanded(
               flex: 9,
               child: Stack(
                 children: <Widget>[
-                  ListView.builder(
-                    itemCount: 3,
-                    controller: _scrollController,
-                    itemBuilder: (context, index) {
-                      return ListMusicData(
-                        indexMusic: index,
-                      );
+                  BlocBuilder<MusicDataCubit, MusicDataState>(
+                    bloc: blocMusicData,
+                    buildWhen: (previus, current) =>
+                        previus.musicData != current.musicData,
+                    builder: (context, state) {
+                      switch (state.musicData.status) {
+                        case Status.INITIAL:
+                          return WidgetStateHandling(
+                            size: size,
+                            assetsPath: "assets/images/podcast.png",
+                            message: "Let's start find songs",
+                          );
+                        case Status.LOADING:
+                          return WidgetStateHandling(
+                            size: size,
+                            assetsPath: "assets/images/podcast.png",
+                            message: "Please wait...",
+                          );
+                        case Status.COMPLETED:
+                          final data = state.musicData.data ?? [];
+                          if (data.isNotEmpty) {
+                            return ListView.builder(
+                              itemCount: data.length,
+                              controller: _scrollController,
+                              itemBuilder: (context, index) {
+                                return ListMusicData(
+                                  indexMusic: index,
+                                  dataMusic: state.musicData.data![index],
+                                  onPressSongSelected: () {
+                                    blocMusicPlayer.startPlay(
+                                        state.musicData.data![index]);
+                                  },
+                                );
+                              },
+                            );
+                          } else {
+                            return WidgetStateHandling(
+                                size: size,
+                                assetsPath: "assets/images/error_data.png",
+                                message: "Sorry we can find anything..");
+                          }
+                        case Status.ERROR:
+                          return WidgetStateHandling(
+                              size: size,
+                              assetsPath: "assets/images/error_data.png",
+                              message: state.musicData.message!);
+                        default:
+                          return WidgetStateHandling(
+                            size: size,
+                            assetsPath: "assets/images/podcast.png",
+                            message: "Let's start find songs",
+                          );
+                      }
                     },
                   ),
-                  BottomPlayerSheet(size: size),
+                  BlocConsumer<MusicPlayerCubit, MusicPlayerState>(
+                    bloc: blocMusicPlayer,
+                    listener: (context, state) async {
+                      if (state is MusicPlayerPlaying) {
+                        await _player
+                            .play(UrlSource(state.musicData.trackPreview));
+                        _player.onDurationChanged.listen((Duration p) {
+                          setState(() {
+                            _musicLength = p;
+                          });
+                        });
+                        _player.onPositionChanged.listen((Duration p) {
+                          setState(() {
+                            _position = p;
+                          });
+                        });
+                        _player.onPlayerComplete.listen((event) {
+                          blocMusicPlayer.completePlay();
+                        });
+                      }
+                    },
+                    builder: (context, state) {
+                      if (state is MusicPlayerPlaying) {
+                        return BottomPlayerSheet(
+                          size: size,
+                          position: _position,
+                          musicLength: _musicLength,
+                          musicData: state.musicData,
+                          onSeekMusic: (value) {
+                            int valueInt = value.round();
+                            Duration newPos = Duration(seconds: valueInt);
+                            _player.seek(newPos);
+                          },
+                        );
+                      } else {
+                        return Container();
+                      }
+                    },
+                  ),
                 ],
               ),
             )

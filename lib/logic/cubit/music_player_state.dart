@@ -4,3 +4,11 @@ part of 'music_player_cubit.dart';
 abstract class MusicPlayerState {}
 
 class MusicPlayerInitial extends MusicPlayerState {}
+
+class MusicPlayerPlaying extends MusicPlayerState {
+  MusicDataModel musicData;
+
+  MusicPlayerPlaying({
+    required this.musicData,
+  });
+}

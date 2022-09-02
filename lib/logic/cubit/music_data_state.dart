@@ -1,6 +1,14 @@
 part of 'music_data_cubit.dart';
 
-@immutable
-abstract class MusicDataState {}
+class MusicDataState {
+  final ApiResponse<List<MusicDataModel>> musicData;
+  MusicDataState({
+    this.musicData = const ApiResponse(),
+  });
 
-class MusicDataInitial extends MusicDataState {}
+  MusicDataState copyWith({ApiResponse<List<MusicDataModel>>? musicData}) {
+    return MusicDataState(
+      musicData: musicData ?? this.musicData,
+    );
+  }
+}

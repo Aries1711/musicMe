@@ -4,12 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:music_app_challenge/constants/colors.dart';
+import 'package:music_app_challenge/repository/model/music_data_response_model.dart';
 
 class ListMusicData extends StatelessWidget {
   int indexMusic;
+  MusicDataModel dataMusic;
+  VoidCallback? onPressSongSelected;
+
   ListMusicData({
     Key? key,
     required this.indexMusic,
+    required this.dataMusic,
+    required this.onPressSongSelected,
   }) : super(key: key);
 
   @override
@@ -19,11 +25,10 @@ class ListMusicData extends StatelessWidget {
         radius: 30.h,
         // child: const Text('AS'),
         // backgroundColor: backgroundBlueSoft,
-        backgroundImage: NetworkImage(
-            "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/44/06/fd/4406fdc0-aab5-e300-82ba-3e5fe81a68a7/00602537868858.rgb.jpg/100x100bb.jpg"),
+        backgroundImage: NetworkImage(dataMusic.albumImage),
       ),
       title: Text(
-        "So far Away Men",
+        dataMusic.trackTitle,
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
         textAlign: TextAlign.start,
@@ -46,9 +51,9 @@ class ListMusicData extends StatelessWidget {
               ),
             ),
             children: <TextSpan>[
-              TextSpan(text: 'A7X \n'),
+              TextSpan(text: '${dataMusic.artistName} \n'),
               TextSpan(
-                text: "Dear God",
+                text: dataMusic.albumName,
                 style: GoogleFonts.poppins(
                   textStyle: TextStyle(
                     fontWeight: FontWeight.w400,
@@ -59,7 +64,7 @@ class ListMusicData extends StatelessWidget {
               ),
             ]),
       ),
-      onTap: () {},
+      onTap: onPressSongSelected,
       contentPadding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 15.w),
       trailing: Padding(
         padding: const EdgeInsets.all(8.0),

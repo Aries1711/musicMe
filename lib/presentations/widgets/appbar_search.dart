@@ -1,12 +1,23 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:music_app_challenge/constants/colors.dart';
 
 class AppbarSearch extends StatelessWidget {
-  const AppbarSearch({
+  final ValueChanged<String> onChanged;
+  final ValueChanged<String> onSubmitted;
+  final VoidCallback? onPressSearch;
+  final TextEditingController searchTextController;
+
+  AppbarSearch({
     Key? key,
     required this.size,
+    required this.onChanged,
+    required this.onSubmitted,
+    required this.onPressSearch,
+    required this.searchTextController,
   }) : super(key: key);
 
   final Size size;
@@ -54,26 +65,26 @@ class AppbarSearch extends StatelessWidget {
                       color: Color(0XFFFFFFFF),
                     ),
                     textAlign: TextAlign.center,
+                    controller: searchTextController,
                     decoration: InputDecoration(
-                        hintText: "Search artists or songs",
-                        hintStyle:
-                            TextStyle(fontSize: 16.sp, color: colorWhite),
-                        focusColor: Colors.transparent,
-                        focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              const BorderSide(color: Colors.transparent),
-                          borderRadius: BorderRadius.circular(25.0),
-                        )),
+                      hintText: "Search artists or songs",
+                      hintStyle: TextStyle(fontSize: 16.sp, color: colorWhite),
+                      focusColor: Colors.transparent,
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: Colors.transparent),
+                        borderRadius: BorderRadius.circular(25.0),
+                      ),
+                    ),
+                    onChanged: onChanged,
+                    onSubmitted: onSubmitted,
+                    textInputAction: TextInputAction.search,
                   ),
                 ),
                 IconButton(
                   icon: Icon(Icons.search),
                   iconSize: 30.h,
                   color: colorWhite,
-                  onPressed: () {
-                    print('haiii');
-                    // widget.onSearched(_query);
-                  },
+                  onPressed: onPressSearch,
                 ),
                 SizedBox(
                   width: 20.w,
