@@ -8,6 +8,7 @@ import 'package:music_app_challenge/repository/model/music_data_response_model.d
 
 class ListMusicData extends StatelessWidget {
   int indexMusic;
+  bool activePlaying;
   MusicDataModel dataMusic;
   VoidCallback? onPressSongSelected;
 
@@ -16,6 +17,7 @@ class ListMusicData extends StatelessWidget {
     required this.indexMusic,
     required this.dataMusic,
     required this.onPressSongSelected,
+    required this.activePlaying,
   }) : super(key: key);
 
   @override
@@ -42,6 +44,8 @@ class ListMusicData extends StatelessWidget {
       ),
       subtitle: RichText(
         textAlign: TextAlign.start,
+        overflow: TextOverflow.ellipsis,
+        maxLines: 2,
         text: TextSpan(
             style: GoogleFonts.poppins(
               textStyle: TextStyle(
@@ -68,7 +72,7 @@ class ListMusicData extends StatelessWidget {
       contentPadding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 15.w),
       trailing: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: indexMusic == 2
+        child: activePlaying
             ? CircularProgressIndicator(
                 backgroundColor: Colors.grey,
                 color: colorBlack,

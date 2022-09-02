@@ -7,8 +7,12 @@ class MusicPlayerInitial extends MusicPlayerState {}
 
 class MusicPlayerPlaying extends MusicPlayerState {
   MusicDataModel musicData;
+  List<MusicDataModel> musicDataList;
+  int indexData;
 
   MusicPlayerPlaying({
     required this.musicData,
+    required this.musicDataList,
+    required this.indexData,
   });
 }

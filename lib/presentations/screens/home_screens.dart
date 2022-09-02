@@ -27,12 +27,12 @@ class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController searchController = TextEditingController();
   final blocMusicData = MusicDataCubit();
   final blocMusicPlayer = MusicPlayerCubit();
-
+  bool playingMusic = false;
   String oldValue = '';
   Timer? timer;
-  AudioPlayer _player = AudioPlayer();
-  Duration _position = new Duration();
-  Duration _musicLength = new Duration();
+  final AudioPlayer _player = AudioPlayer();
+  Duration _position = Duration();
+  Duration _musicLength = Duration();
 
   void _onSearchChanged() {
     if (searchController.text != '' && oldValue != searchController.text) {
@@ -78,103 +78,153 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             Expanded(
               flex: 9,
-              child: Stack(
-                children: <Widget>[
-                  BlocBuilder<MusicDataCubit, MusicDataState>(
-                    bloc: blocMusicData,
-                    buildWhen: (previus, current) =>
-                        previus.musicData != current.musicData,
-                    builder: (context, state) {
-                      switch (state.musicData.status) {
-                        case Status.INITIAL:
-                          return WidgetStateHandling(
-                            size: size,
-                            assetsPath: "assets/images/podcast.png",
-                            message: "Let's start find songs",
-                          );
-                        case Status.LOADING:
-                          return WidgetStateHandling(
-                            size: size,
-                            assetsPath: "assets/images/podcast.png",
-                            message: "Please wait...",
-                          );
-                        case Status.COMPLETED:
-                          final data = state.musicData.data ?? [];
-                          if (data.isNotEmpty) {
-                            return ListView.builder(
-                              itemCount: data.length,
-                              controller: _scrollController,
-                              itemBuilder: (context, index) {
-                                return ListMusicData(
-                                  indexMusic: index,
-                                  dataMusic: state.musicData.data![index],
-                                  onPressSongSelected: () {
-                                    blocMusicPlayer.startPlay(
-                                        state.musicData.data![index]);
-                                  },
+              child: Container(
+                child: BlocConsumer<MusicPlayerCubit, MusicPlayerState>(
+                  bloc: blocMusicPlayer,
+                  listener: (context, state) async {
+                    if (state is MusicPlayerPlaying) {
+                      await _player
+                          .play(UrlSource(state.musicData.trackPreview));
+                      _player.onDurationChanged.listen((Duration p) {
+                        setState(() {
+                          _musicLength = p;
+                        });
+                      });
+                      _player.onPositionChanged.listen((Duration p) {
+                        setState(() {
+                          _position = p;
+                        });
+                      });
+                      _player.onPlayerComplete.listen((event) {
+                        blocMusicPlayer.completePlay();
+                      });
+                    }
+                  },
+                  builder: (context, state) {
+                    return Stack(
+                      children: <Widget>[
+                        BlocBuilder<MusicDataCubit, MusicDataState>(
+                          bloc: blocMusicData,
+                          buildWhen: (previus, current) =>
+                              previus.musicData != current.musicData,
+                          builder: (context, stateData) {
+                            switch (stateData.musicData.status) {
+                              case Status.INITIAL:
+                                return WidgetStateHandling(
+                                  size: size,
+                                  assetsPath: "assets/images/podcast.png",
+                                  message: "Let's start find songs",
                                 );
-                              },
-                            );
-                          } else {
-                            return WidgetStateHandling(
-                                size: size,
-                                assetsPath: "assets/images/error_data.png",
-                                message: "Sorry we can find anything..");
-                          }
-                        case Status.ERROR:
-                          return WidgetStateHandling(
-                              size: size,
-                              assetsPath: "assets/images/error_data.png",
-                              message: state.musicData.message!);
-                        default:
-                          return WidgetStateHandling(
-                            size: size,
-                            assetsPath: "assets/images/podcast.png",
-                            message: "Let's start find songs",
-                          );
-                      }
-                    },
-                  ),
-                  BlocConsumer<MusicPlayerCubit, MusicPlayerState>(
-                    bloc: blocMusicPlayer,
-                    listener: (context, state) async {
-                      if (state is MusicPlayerPlaying) {
-                        await _player
-                            .play(UrlSource(state.musicData.trackPreview));
-                        _player.onDurationChanged.listen((Duration p) {
-                          setState(() {
-                            _musicLength = p;
-                          });
-                        });
-                        _player.onPositionChanged.listen((Duration p) {
-                          setState(() {
-                            _position = p;
-                          });
-                        });
-                        _player.onPlayerComplete.listen((event) {
-                          blocMusicPlayer.completePlay();
-                        });
-                      }
-                    },
-                    builder: (context, state) {
-                      if (state is MusicPlayerPlaying) {
-                        return BottomPlayerSheet(
-                          size: size,
-                          position: _position,
-                          musicLength: _musicLength,
-                          musicData: state.musicData,
-                          onSeekMusic: (value) {
-                            int valueInt = value.round();
-                            Duration newPos = Duration(seconds: valueInt);
-                            _player.seek(newPos);
+                              case Status.LOADING:
+                                return WidgetStateHandling(
+                                  size: size,
+                                  assetsPath: "assets/images/podcast.png",
+                                  message: "Please wait...",
+                                );
+                              case Status.COMPLETED:
+                                final data = stateData.musicData.data ?? [];
+                                if (data.isNotEmpty) {
+                                  return ListView.builder(
+                                    itemCount: data.length,
+                                    controller: _scrollController,
+                                    itemBuilder: (context, index) {
+                                      return ListMusicData(
+                                        indexMusic: index,
+                                        activePlaying: (() {
+                                          if (state is MusicPlayerPlaying &&
+                                              state.musicData.trackPreview ==
+                                                  stateData
+                                                      .musicData
+                                                      .data![index]
+                                                      .trackPreview) {
+                                            return true;
+                                          } else {
+                                            return false;
+                                          }
+                                        }()),
+                                        dataMusic:
+                                            stateData.musicData.data![index],
+                                        onPressSongSelected: () =>
+                                            blocMusicPlayer.startPlay(
+                                                stateData
+                                                    .musicData.data![index],
+                                                stateData.musicData.data!,
+                                                index),
+                                      );
+                                    },
+                                  );
+                                } else {
+                                  return WidgetStateHandling(
+                                      size: size,
+                                      assetsPath:
+                                          "assets/images/error_data.png",
+                                      message: "Sorry we can find anything..");
+                                }
+                              case Status.ERROR:
+                                return WidgetStateHandling(
+                                    size: size,
+                                    assetsPath: "assets/images/error_data.png",
+                                    message: stateData.musicData.message!);
+                              default:
+                                return WidgetStateHandling(
+                                  size: size,
+                                  assetsPath: "assets/images/podcast.png",
+                                  message: "Let's start find songs",
+                                );
+                            }
                           },
-                        );
-                      } else {
-                        return Container();
-                      }
-                    },
-                  ),
-                ],
+                        ),
+                        (() {
+                          if (state is MusicPlayerPlaying) {
+                            return BottomPlayerSheet(
+                                size: size,
+                                position: _position,
+                                musicLength: _musicLength,
+                                onPressNext: () {
+                                  if (state.indexData <
+                                      state.musicDataList.length) {
+                                    blocMusicPlayer.startPlay(
+                                        state
+                                            .musicDataList[state.indexData + 1],
+                                        state.musicDataList,
+                                        state.indexData + 1);
+                                  }
+                                },
+                                onPressPrevius: () {
+                                  if (state.indexData >= 1) {
+                                    blocMusicPlayer.startPlay(
+                                        state
+                                            .musicDataList[state.indexData - 1],
+                                        state.musicDataList,
+                                        state.indexData - 1);
+                                  }
+                                },
+                                musicDataList: state.musicDataList,
+                                indexData: state.indexData,
+                                onPressPause: () {
+                                  if (playingMusic) {
+                                    _player.resume();
+                                  } else {
+                                    _player.pause();
+                                  }
+                                  setState(() {
+                                    playingMusic = !playingMusic;
+                                  });
+                                },
+                                musicData: state.musicData,
+                                onSeekMusic: (value) {
+                                  int valueInt = value.round();
+                                  Duration newPos = Duration(seconds: valueInt);
+                                  _player.seek(newPos);
+                                });
+                          } else {
+                            return Container();
+                          }
+                        }())
+                      ],
+                    );
+                  },
+                ),
               ),
             )
           ],

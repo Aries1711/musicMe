@@ -8,9 +8,13 @@ part 'music_player_state.dart';
 class MusicPlayerCubit extends Cubit<MusicPlayerState> {
   MusicPlayerCubit() : super(MusicPlayerInitial());
 
-  void startPlay(MusicDataModel musicData) async {
+  void startPlay(MusicDataModel musicData, List<MusicDataModel> musicDataList,
+      int indexData) async {
     emit(
-      MusicPlayerPlaying(musicData: musicData),
+      MusicPlayerPlaying(
+          musicData: musicData,
+          musicDataList: musicDataList,
+          indexData: indexData),
     );
   }
 

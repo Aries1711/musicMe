@@ -10,7 +10,10 @@ class BottomPlayerSheet extends StatelessWidget {
   final Duration position;
   final Duration musicLength;
   final Function onSeekMusic;
+  final VoidCallback? onPressPause, onPressPrevius, onPressNext;
   final MusicDataModel musicData;
+  final List<MusicDataModel> musicDataList;
+  final int indexData;
 
   BottomPlayerSheet({
     Key? key,
@@ -19,6 +22,11 @@ class BottomPlayerSheet extends StatelessWidget {
     required this.musicLength,
     required this.onSeekMusic,
     required this.musicData,
+    required this.musicDataList,
+    required this.indexData,
+    required this.onPressPrevius,
+    required this.onPressPause,
+    required this.onPressNext,
   }) : super(key: key);
 
   final Size size;
@@ -68,7 +76,8 @@ class BottomPlayerSheet extends StatelessWidget {
                             topRight: Radius.circular(10)),
                         image: DecorationImage(
                             // image: AssetImage(imgPath),
-                            image: NetworkImage(musicData.albumImage),
+                            image: NetworkImage(
+                                musicDataList[indexData].albumImage),
                             fit: BoxFit.cover),
                       ),
                     ),
@@ -79,7 +88,7 @@ class BottomPlayerSheet extends StatelessWidget {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              musicData.trackTitle,
+                              musicDataList[indexData].trackTitle,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               textAlign: TextAlign.start,
@@ -95,8 +104,8 @@ class BottomPlayerSheet extends StatelessWidget {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              musicData.artistName,
-                              maxLines: 2,
+                              musicDataList[indexData].artistName,
+                              maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               textAlign: TextAlign.start,
                               style: GoogleFonts.poppins(
@@ -116,20 +125,20 @@ class BottomPlayerSheet extends StatelessWidget {
                       child: Row(
                         children: <Widget>[
                           IconButton(
-                            onPressed: () {},
+                            onPressed: onPressPrevius,
                             icon: Icon(
                               Icons.skip_previous,
                             ),
                             color: colorWhite,
                           ),
                           IconButton(
-                            onPressed: () {},
+                            onPressed: onPressPause,
                             icon: Icon(Icons.pause_circle),
                             color: colorWhite,
                             iconSize: 32.h,
                           ),
                           IconButton(
-                            onPressed: () {},
+                            onPressed: onPressNext,
                             icon: Icon(Icons.skip_next),
                             color: colorWhite,
                           )

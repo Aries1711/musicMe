@@ -10,14 +10,6 @@ class MusicDataCubit extends Cubit<MusicDataState> {
   final _homeApi = HomeApi();
   MusicDataCubit() : super(MusicDataState());
 
-  // setInitial() {
-  //   emit(
-  //     state.copyWith(
-  //       musicData: const ApiResponse(),
-  //     ),
-  //   );
-  // }
-
   getMusicDataByQuery(String query) async {
     emit(state.copyWith(musicData: ApiResponse.loading()));
     final responseMusicDataApi = await _homeApi.apiGetMusicData(query);
