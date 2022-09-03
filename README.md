@@ -49,8 +49,8 @@ This App project directory consist of 4 directories (Preparation for preparation
 ### Folder Structure & Description
 
 1. **presentations**: _Inside lib folder consists folder presentation which is folder for mainly structured view or presentation to users_
-   a. `router folder`: _folder for declare onGenerateRoute which more scalable route for wide complex project, define class screen in switch case and call it directly to its named route class_
-   - `app_router.dart` : file class ongenerated route which is called in main.dart to initialize route page for first launching App route begin by '/' where it is splashscreen.
+   - `router folder`: _folder for declare onGenerateRoute which more scalable route for wide complex project, define class screen in switch case and call it directly to its named route class_
+     > `app_router.dart` : file class ongenerated route which is called in main.dart to initialize route page for first launching App route begin by '/' where it is splashscreen.
    - `screens folder`: _folder for main page statefull widget of each feature in app_
    - `widgets folder`: _consists widgets that build the main screen (homepage) and do it's function and its reusable_
 2. **logic** : _Inside lib folder consists folder logic which is folder for handle complex logic for the main page of the feature_
