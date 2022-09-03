@@ -1,7 +1,8 @@
 # MusicMe
 
 Simple music player using flutter, Music from Itunes.
-![SplashScreen](https://drive.google.com/file/d/12upLoFW1kIUXfH_yM0qhe6N4_1OVYShX/view?usp=sharing)
+
+![SplashScreen](./assets/images/splash.PNG)
 
 ## Features
 
