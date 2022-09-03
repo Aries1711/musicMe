@@ -111,13 +111,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             switch (stateData.musicData.status) {
                               case Status.INITIAL:
                                 return WidgetStateHandling(
-                                  size: size,
                                   assetsPath: "assets/images/podcast.png",
                                   message: "Let's start find songs",
                                 );
                               case Status.LOADING:
                                 return WidgetStateHandling(
-                                  size: size,
                                   assetsPath: "assets/images/podcast.png",
                                   message: "Please wait...",
                                 );
@@ -155,19 +153,16 @@ class _HomeScreenState extends State<HomeScreen> {
                                   );
                                 } else {
                                   return WidgetStateHandling(
-                                      size: size,
                                       assetsPath:
                                           "assets/images/error_data.png",
                                       message: "Sorry we can find anything..");
                                 }
                               case Status.ERROR:
                                 return WidgetStateHandling(
-                                    size: size,
                                     assetsPath: "assets/images/error_data.png",
                                     message: stateData.musicData.message!);
                               default:
                                 return WidgetStateHandling(
-                                  size: size,
                                   assetsPath: "assets/images/podcast.png",
                                   message: "Let's start find songs",
                                 );
@@ -177,7 +172,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         (() {
                           if (state is MusicPlayerPlaying) {
                             return BottomPlayerSheet(
-                                size: size,
                                 position: _position,
                                 musicLength: _musicLength,
                                 onPressNext: () {
@@ -201,6 +195,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 },
                                 musicDataList: state.musicDataList,
                                 indexData: state.indexData,
+                                playingMusic: playingMusic,
                                 onPressPause: () {
                                   if (playingMusic) {
                                     _player.resume();

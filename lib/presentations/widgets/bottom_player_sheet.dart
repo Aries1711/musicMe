@@ -7,17 +7,16 @@ import 'package:music_app_challenge/constants/colors.dart';
 import 'package:music_app_challenge/repository/model/music_data_response_model.dart';
 
 class BottomPlayerSheet extends StatelessWidget {
-  final Duration position;
-  final Duration musicLength;
+  final Duration position, musicLength;
   final Function onSeekMusic;
   final VoidCallback? onPressPause, onPressPrevius, onPressNext;
   final MusicDataModel musicData;
   final List<MusicDataModel> musicDataList;
   final int indexData;
+  final bool playingMusic;
 
   BottomPlayerSheet({
     Key? key,
-    required this.size,
     required this.position,
     required this.musicLength,
     required this.onSeekMusic,
@@ -27,12 +26,12 @@ class BottomPlayerSheet extends StatelessWidget {
     required this.onPressPrevius,
     required this.onPressPause,
     required this.onPressNext,
+    required this.playingMusic,
   }) : super(key: key);
-
-  final Size size;
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Positioned(
       bottom: 0.h,
       child: Visibility(
@@ -133,7 +132,9 @@ class BottomPlayerSheet extends StatelessWidget {
                           ),
                           IconButton(
                             onPressed: onPressPause,
-                            icon: Icon(Icons.pause_circle),
+                            icon: playingMusic == true
+                                ? Icon(Icons.play_arrow)
+                                : Icon(Icons.pause_circle),
                             color: colorWhite,
                             iconSize: 32.h,
                           ),

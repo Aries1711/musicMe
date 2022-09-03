@@ -10,15 +10,13 @@ class WidgetStateHandling extends StatelessWidget {
 
   WidgetStateHandling({
     Key? key,
-    required this.size,
     required this.assetsPath,
     required this.message,
   }) : super(key: key);
 
-  final Size size;
-
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return SizedBox(
       height: size.height * 0.5,
       child: Column(
