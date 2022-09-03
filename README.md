@@ -9,7 +9,11 @@ Simple music player using flutter, Music from Itunes.
 3. Search other song while still listening to the current song or just push button next or prev (vice verca) to play song from the list.
 4. Error handling api, empty search and many more.
 
-## Developt or build App requirements
+## Link Download build .apk
+
+- [Gdrive](https://drive.google.com/drive/folders/1GDyKWi5HYKpWxIc0qzZpzV_lndV4Cxec?usp=sharing)
+
+## Develop or build App requirements
 
 - Graddle version gradle-6.7-all.zip
 - installed Android studio and Flutter
@@ -35,11 +39,22 @@ Simple music player using flutter, Music from Itunes.
 
 ## Project Code Infrastructure & Design Pattern
 
-This App project directory consist of 5 directories (Preparation for preparation for the next possible complex feature & scallable code)
+This App project directory consist of 4 directories (Preparation for preparation for the next possible complex feature & scallable code)
 
-# Design pattern or state management used
+### Design pattern or state management used
 
-- BLOC (State Management)
-- Design Pattern (Repository Pattern)
+- State Management [BLOC](https://bloclibrary.dev/#/)
+- Design Patter [RepositoryPattern](https://blog.logrocket.com/implementing-repository-pattern-flutter/#:~:text=Flutter%20developers%20use%20various%20design,widgets%20into%20private%20methods%2Fclasses.)
 
-# Folder Structure & Description
+### Folder Structure & Description
+
+1. **presentations**: _Inside lib folder consists folder presentation which is folder for mainly structured view or presentation to users_
+   - `router folder`: _folder for declare onGenerateRoute which more scalable route for wide complex project, define class screen in switch case and call it directly to its named route class_
+     -- `app_router.dart` : file class ongenerated route which is called in main.dart to initialize route page for first launching App route begin by '/' where it is splashscreen.
+   - `screens folder`: _folder for main page statefull widget of each feature in app_
+   - `widgets folder`: _consists widgets that build the main screen (homepage) and do it's function and its reusable_
+2. **logic** : _Inside lib folder consists folder logic which is folder for handle complex logic for the main page of the feature_
+   - `cubit`: _folder for bloc statemanagement and business logic where made_
+   - `function`: _empty folder for now but very useful in the future to accommodate Class helper functions that help reduce spaghetti code functions on the main view screen page where project is getting more complex_
+3. **constant** : _folder for files provide constants value file to the project example: api constant, colors, class abstract, device service value bluetooth , camera etc_
+4. **repository** : _folder for interface api, api class function, and model interface_
