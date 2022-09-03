@@ -2,7 +2,7 @@
 
 Simple music player using flutter, Music from Itunes.
 
-![SplashScreen](./assets/images/splash.PNG)
+![SplashScreen](./assets/images/splash.PNG) ![BeforeSearch](./assets/images/beforeSearch.PNG) ![OnloadingSearch](./assets/images/onloading.PNG) ![AfterSearch](./assets/images/onsearch.PNG) ![PlayingMusic](./assets/images/playingMusic.PNG)
 
 ## Features
 
