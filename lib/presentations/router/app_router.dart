@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:music_app_challenge/presentations/screens/home_screens.dart';
+import 'package:music_app_challenge/presentations/screens/home_screen.dart';
 import 'package:music_app_challenge/presentations/screens/splash_screen.dart';
 
 class AppRouter {
