@@ -1,6 +1,7 @@
 # MusicMe
 
 Simple music player using flutter, Music from Itunes.
+![SplashScreen](https://drive.google.com/file/d/12upLoFW1kIUXfH_yM0qhe6N4_1OVYShX/view?usp=sharing)
 
 ## Features
 
@@ -70,6 +71,7 @@ This App project directory consist of 4 directories (Preparation for preparation
    > `api_response.dart` : abstract class api response to simpler make state response from api_services executed in 'respository->api->home_api.dart'
    > `api.dart` : its constant file that had some interact as .env (environtment controller) in here im declare the url main for production and dev which is can make we developer easier to control where should the api_services hit the root url, and because this file it can be so helped to developer when want to change the root url hit by api_services, just change APP_ENV to "PROD" or "DEV".
 4. **repository** : _folder for interface api, api class function, and model interface_
+
 - `api`: _folder for declare api services that used for feature in app_
   > `base_api.dart` : its file define the base function for api_services which is GET, POST, POSTPARSE, GETPARSE and etc. And the main focus for this base api its to manage the bearer_token for auth app.
   > `home_api.dart` : its file define the api_services for api function in main homepage search query and this class can include many different api service which is in complex app will be had 1 to multiple endpoint for just 1 page.
