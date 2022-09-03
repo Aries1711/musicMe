@@ -72,11 +72,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   searchTextController: searchController,
                   onChanged: (value) {},
                   onSubmitted: (value) async {
-                    await blocMusicData.getMusicDataByQuery(value);
+                    if (searchController.text != oldValue)
+                      await blocMusicData.getMusicDataByQuery(value);
                   },
                   onPressSearch: () async {
-                    await blocMusicData
-                        .getMusicDataByQuery(searchController.text);
+                    if (searchController.text != oldValue)
+                      await blocMusicData
+                          .getMusicDataByQuery(searchController.text);
                   },
                 ),
               ),
