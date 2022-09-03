@@ -48,6 +48,14 @@ This App project directory consist of 4 directories (Preparation for preparation
 - State Management [BLOC](https://bloclibrary.dev/#/)
 - Design Patter [RepositoryPattern](https://blog.logrocket.com/implementing-repository-pattern-flutter/#:~:text=Flutter%20developers%20use%20various%20design,widgets%20into%20private%20methods%2Fclasses.)
 
+### Library that used
+
+- `flutter_screenutil`: _responsive view library_
+- `flutter_bloc`: _state management_
+- `bloc_test`: _bloc testing function state_
+- `http`: _api interface_
+- `audioplayers`: _music player library_
+
 ### Folder Structure & Description
 
 1. **presentations**: _Inside lib folder consists folder presentation which is folder for mainly structured view or presentation to users_
